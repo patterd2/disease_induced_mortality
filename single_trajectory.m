@@ -18,17 +18,17 @@
 
 %% ── Style ────────────────────────────────────────────────────────────────
 
-addpath('/Users/denispatterson/Documents/MatCont7p4/');
+%addpath('/Users/denispatterson/Documents/MatCont7p4/');
 set_ggplot_style();
 gg = evalin('base', 'gg_colours');
 
 %% ── Parameters ───────────────────────────────────────────────────────────
 
 Lambda  = 0.0003846154;
-R0_val  = 0.9999999999901998;
+R0_val  = 0.99;
 mu      = 0.0003846154;
 delta   = 0.07692308;
-gamma_r = 1;           % 'gamma_r' avoids shadowing MATLAB's built-in gamma()
+gamma_r = 1;  % 'gamma_r' avoids conflicts with the built-in gamma()
 a       = -10000;
 b       = 0.02;
 m       = 100;
@@ -62,7 +62,7 @@ odefun = @(t, u) [ ...
 %% ── Initial conditions and integration ───────────────────────────────────
 
 u0   = [0.99; 0.01; 0];           % S(0), I(0), R(0) — near DFE with small I
-tspan = [0, 100];
+tspan = [0, 200];
 
 odeOpts = odeset('RelTol', 1e-8, 'AbsTol', 1e-10, 'NonNegative', [1 2 3]);
 
@@ -85,16 +85,22 @@ col_R   = gg(3, :);   % teal-cyan    — R(t)
 mk_col  = [0.25 0.25 0.25];   % dark grey for IC / end-state markers
 
 %% ── Figure ───────────────────────────────────────────────────────────────
+%
+%   Layout (2 × 3 grid):
+%     Row 1:  A — 2D phase portrait (S,I)  |  B — 3D phase portrait (S,I,R) [double-wide]
+%     Row 2:  C — S(t)  |  D — I(t)  |  E — R(t)
 
-fig = figure('Units', 'inches', 'Position', [1 1 9 7], 'Color', 'w');
+fig = figure('Units', 'inches', 'Position', [1 1 13 7], 'Color', 'w');
 
 LW = 1.2;   % line width (set_ggplot_style default is 1.2)
 FS = 10;    % font size  (set_ggplot_style default is 10)
 FN = 'Helvetica';
 
-%% Panel A — Phase portrait in (S, I) plane ───────────────────────────────
+col_3d = gg(4, :);   % purple — 3D phase portrait
 
-ax1 = subplot(2, 2, 1);
+%% Panel A — 2D phase portrait in (S, I) plane ────────────────────────────
+
+ax1 = subplot(2, 3, 1);
 hold(ax1, 'on');
 
 plot(ax1, S, I, '-', 'Color', col_SI, 'LineWidth', LW);
@@ -112,54 +118,83 @@ plot(ax1, S(end), I(end), 's', ...
 xlabel(ax1, 'Susceptible,  $S$', 'Interpreter', 'latex');
 ylabel(ax1, 'Infected,  $I$',    'Interpreter', 'latex');
 
-% Panel letter A — placed after axes are rendered
 xl1 = ax1.XLim;  yl1 = ax1.YLim;
 text(ax1, xl1(1), yl1(2), 'A', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
 
-%% Panel B — S(t) ─────────────────────────────────────────────────────────
+%% Panel B — 3D phase portrait in (S, I, R) space ────────────────────────
 
-ax2 = subplot(2, 2, 2);
+ax2 = subplot(2, 3, [2, 3]);
 hold(ax2, 'on');
 
-plot(ax2, t, S, '-', 'Color', col_S, 'LineWidth', LW);
+plot3(ax2, S, I, R, '-', 'Color', col_3d, 'LineWidth', LW);
 
-xlabel(ax2, 'Time,  $t$',       'Interpreter', 'latex');
-ylabel(ax2, 'Susceptible,  $S(t)$', 'Interpreter', 'latex');
+% IC marker (filled circle)
+plot3(ax2, S(1), I(1), R(1), 'o', ...
+    'Color', mk_col, 'MarkerFaceColor', col_3d, ...
+    'MarkerSize', 6, 'LineWidth', 0.8);
 
-xl2 = ax2.XLim;  yl2 = ax2.YLim;
-text(ax2, xl2(1), yl2(2), 'B', ...
+% End-state marker (filled square)
+plot3(ax2, S(end), I(end), R(end), 's', ...
+    'Color', mk_col, 'MarkerFaceColor', col_3d, ...
+    'MarkerSize', 6, 'LineWidth', 0.8);
+
+xlabel(ax2, 'Susceptible,  $S$',  'Interpreter', 'latex');
+ylabel(ax2, 'Infected,  $I$',     'Interpreter', 'latex');
+zlabel(ax2, 'Recovered,  $R$',    'Interpreter', 'latex');
+
+view(ax2, [-35, 22]);
+ax2.Box = 'on';
+grid(ax2, 'on');
+
+xl2 = ax2.XLim;  yl2 = ax2.YLim;  zl2 = ax2.ZLim;
+text(ax2, xl2(1), yl2(1), zl2(2), 'B', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
 
-%% Panel C — I(t) ─────────────────────────────────────────────────────────
+%% Panel C — S(t) ─────────────────────────────────────────────────────────
 
-ax3 = subplot(2, 2, 3);
+ax3 = subplot(2, 3, 4);
 hold(ax3, 'on');
 
-plot(ax3, t, I, '-', 'Color', col_SI, 'LineWidth', LW);
+plot(ax3, t, S, '-', 'Color', col_S, 'LineWidth', LW);
 
-xlabel(ax3, 'Time,  $t$',     'Interpreter', 'latex');
-ylabel(ax3, 'Infected,  $I(t)$', 'Interpreter', 'latex');
+xlabel(ax3, 'Time,  $t$  (days)',       'Interpreter', 'latex');
+ylabel(ax3, 'Susceptible,  $S(t)$', 'Interpreter', 'latex');
 
 xl3 = ax3.XLim;  yl3 = ax3.YLim;
 text(ax3, xl3(1), yl3(2), 'C', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
 
-%% Panel D — R(t) ─────────────────────────────────────────────────────────
+%% Panel D — I(t) ─────────────────────────────────────────────────────────
 
-ax4 = subplot(2, 2, 4);
+ax4 = subplot(2, 3, 5);
 hold(ax4, 'on');
 
-plot(ax4, t, R, '-', 'Color', col_R, 'LineWidth', LW);
+plot(ax4, t, I, '-', 'Color', col_SI, 'LineWidth', LW);
 
-xlabel(ax4, 'Time,  $t$',        'Interpreter', 'latex');
-ylabel(ax4, 'Recovered,  $R(t)$', 'Interpreter', 'latex');
+xlabel(ax4, 'Time,  $t$  (days)',   'Interpreter', 'latex');
+ylabel(ax4, 'Infected,  $I(t)$', 'Interpreter', 'latex');
 
 xl4 = ax4.XLim;  yl4 = ax4.YLim;
 text(ax4, xl4(1), yl4(2), 'D', ...
+    'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
+    'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+
+%% Panel E — R(t) ─────────────────────────────────────────────────────────
+
+ax5 = subplot(2, 3, 6);
+hold(ax5, 'on');
+
+plot(ax5, t, R, '-', 'Color', col_R, 'LineWidth', LW);
+
+xlabel(ax5, 'Time,  $t$  (days)',        'Interpreter', 'latex');
+ylabel(ax5, 'Recovered,  $R(t)$', 'Interpreter', 'latex');
+
+xl5 = ax5.XLim;  yl5 = ax5.YLim;
+text(ax5, xl5(1), yl5(2), 'E', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
 
