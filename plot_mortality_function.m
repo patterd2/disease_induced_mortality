@@ -107,8 +107,8 @@ xticks(ax, 0 : 0.1 : I_max);   % ticks at 0, 0.1, 0.2, 0.3, 0.4, 0.5
 
 %% Labels and legend ───────────────────────────────────────────────────────
 
-xlabel(ax, 'Infection levels ({\itI})',                  'Interpreter', 'tex');
-ylabel(ax, 'Per-infection mortality rate ({\itf}({\itI}))', 'Interpreter', 'tex');
+xlabel(ax, 'Infection levels (I)',                  'Interpreter', 'tex');
+ylabel(ax, 'Per-infection mortality rate (f(I))', 'Interpreter', 'tex');
 
 legend(ax, ...
     'Interpreter', 'tex', ...
@@ -118,9 +118,9 @@ legend(ax, ...
 
 ylim(ax, [0, b * 1.1]);   % small headroom above the baseline
 
-% Suppress first y-tick label (ggplot2 style — avoids crowding at origin)
-ytl = ax.YTickLabel;
-if numel(ytl) > 0,  ytl{1} = '';  ax.YTickLabel = ytl;  end
+% Suppress first y-tick mark and its label (ggplot2 style)
+yt = ax.YTick;
+if numel(yt) > 1,  ax.YTick = yt(2:end);  end
 
 %% ── Save ─────────────────────────────────────────────────────────────────
 

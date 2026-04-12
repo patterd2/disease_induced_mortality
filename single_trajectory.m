@@ -119,8 +119,8 @@ plot(ax1, S(end), I(end), 's', ...
 xlabel(ax1, 'Susceptible,  {\itS}', 'Interpreter', 'tex');
 ylabel(ax1, 'Infected,  {\itI}',   'Interpreter', 'tex');
 
-ytl = ax1.YTickLabel;
-if numel(ytl) > 0,  ytl{1} = '';  ax1.YTickLabel = ytl;  end
+yt = ax1.YTick;
+if numel(yt) > 1,  ax1.YTick = yt(2:end);  end
 
 xl1 = ax1.XLim;  yl1 = ax1.YLim;
 text(ax1, xl1(1), yl1(2), 'A', ...
@@ -153,8 +153,8 @@ view(ax2, [-35, 22]);
 ax2.Box = 'off';
 grid(ax2, 'on');
 
-ytl = ax2.YTickLabel;
-if numel(ytl) > 0,  ytl{1} = '';  ax2.YTickLabel = ytl;  end
+yt = ax2.YTick;
+if numel(yt) > 1,  ax2.YTick = yt(2:end);  end
 
 xl2 = ax2.XLim;  yl2 = ax2.YLim;  zl2 = ax2.ZLim;
 text(ax2, xl2(1), yl2(1), zl2(2), 'B', ...
@@ -177,8 +177,8 @@ xticks(ax3, linspace(0, tspan(end), 5));
 xlabel(ax3, 'Time,  {\itt}  (days)',         'Interpreter', 'tex');
 ylabel(ax3, 'Susceptible,  {\itS}({\itt})', 'Interpreter', 'tex');
 
-ytl = ax3.YTickLabel;
-if numel(ytl) > 0,  ytl{1} = '';  ax3.YTickLabel = ytl;  end
+yt = ax3.YTick;
+if numel(yt) > 1,  ax3.YTick = yt(2:end);  end
 
 xl3 = ax3.XLim;  yl3 = ax3.YLim;
 text(ax3, xl3(1), yl3(2), 'C', ...
@@ -199,8 +199,8 @@ xticks(ax4, linspace(0, tspan(end), 5));
 xlabel(ax4, 'Time,  {\itt}  (days)',       'Interpreter', 'tex');
 ylabel(ax4, 'Infected,  {\itI}({\itt})', 'Interpreter', 'tex');
 
-ytl = ax4.YTickLabel;
-if numel(ytl) > 0,  ytl{1} = '';  ax4.YTickLabel = ytl;  end
+yt = ax4.YTick;
+if numel(yt) > 1,  ax4.YTick = yt(2:end);  end
 
 xl4 = ax4.XLim;  yl4 = ax4.YLim;
 text(ax4, xl4(1), yl4(2), 'D', ...
@@ -221,8 +221,8 @@ xticks(ax5, linspace(0, tspan(end), 5));
 xlabel(ax5, 'Time,  {\itt}  (days)',         'Interpreter', 'tex');
 ylabel(ax5, 'Recovered,  {\itR}({\itt})', 'Interpreter', 'tex');
 
-ytl = ax5.YTickLabel;
-if numel(ytl) > 0,  ytl{1} = '';  ax5.YTickLabel = ytl;  end
+yt = ax5.YTick;
+if numel(yt) > 1,  ax5.YTick = yt(2:end);  end
 
 xl5 = ax5.XLim;  yl5 = ax5.YLim;
 text(ax5, xl5(1), yl5(2), 'E', ...
