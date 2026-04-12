@@ -116,8 +116,8 @@ plot(ax1, S(end), I(end), 's', ...
     'Color', mk_col, 'MarkerFaceColor', col_SI, ...
     'MarkerSize', 6, 'LineWidth', 0.8);
 
-xlabel(ax1, 'Susceptible,  $S$', 'Interpreter', 'latex');
-ylabel(ax1, 'Infected,  $I$',    'Interpreter', 'latex');
+xlabel(ax1, 'Susceptible,  {\itS}', 'Interpreter', 'tex');
+ylabel(ax1, 'Infected,  {\itI}',   'Interpreter', 'tex');
 
 ytl = ax1.YTickLabel;
 if numel(ytl) > 0,  ytl{1} = '';  ax1.YTickLabel = ytl;  end
@@ -145,9 +145,9 @@ plot3(ax2, S(end), I(end), R(end), 's', ...
     'Color', mk_col, 'MarkerFaceColor', col_3d, ...
     'MarkerSize', 6, 'LineWidth', 0.8);
 
-xlabel(ax2, 'Susceptible,  $S$',  'Interpreter', 'latex');
-ylabel(ax2, 'Infected,  $I$',     'Interpreter', 'latex');
-zlabel(ax2, 'Recovered,  $R$',    'Interpreter', 'latex');
+xlabel(ax2, 'Susceptible,  {\itS}', 'Interpreter', 'tex');
+ylabel(ax2, 'Infected,  {\itI}',   'Interpreter', 'tex');
+zlabel(ax2, 'Recovered,  {\itR}',  'Interpreter', 'tex');
 
 view(ax2, [-35, 22]);
 ax2.Box = 'off';
@@ -174,8 +174,8 @@ t_pad = 0.05 * tspan(end);
 xlim(ax3, [-t_pad, tspan(end) + t_pad]);
 xticks(ax3, linspace(0, tspan(end), 5));
 
-xlabel(ax3, 'Time,  $t$  (days)',       'Interpreter', 'latex');
-ylabel(ax3, 'Susceptible,  $S(t)$', 'Interpreter', 'latex');
+xlabel(ax3, 'Time,  {\itt}  (days)',         'Interpreter', 'tex');
+ylabel(ax3, 'Susceptible,  {\itS}({\itt})', 'Interpreter', 'tex');
 
 ytl = ax3.YTickLabel;
 if numel(ytl) > 0,  ytl{1} = '';  ax3.YTickLabel = ytl;  end
@@ -196,8 +196,8 @@ plot(ax4, t, I, '-', 'Color', col_SI, 'LineWidth', LW);
 xlim(ax4, [-t_pad, tspan(end) + t_pad]);
 xticks(ax4, linspace(0, tspan(end), 5));
 
-xlabel(ax4, 'Time,  $t$  (days)',   'Interpreter', 'latex');
-ylabel(ax4, 'Infected,  $I(t)$', 'Interpreter', 'latex');
+xlabel(ax4, 'Time,  {\itt}  (days)',       'Interpreter', 'tex');
+ylabel(ax4, 'Infected,  {\itI}({\itt})', 'Interpreter', 'tex');
 
 ytl = ax4.YTickLabel;
 if numel(ytl) > 0,  ytl{1} = '';  ax4.YTickLabel = ytl;  end
@@ -218,8 +218,8 @@ plot(ax5, t, R, '-', 'Color', col_R, 'LineWidth', LW);
 xlim(ax5, [-t_pad, tspan(end) + t_pad]);
 xticks(ax5, linspace(0, tspan(end), 5));
 
-xlabel(ax5, 'Time,  $t$  (days)',        'Interpreter', 'latex');
-ylabel(ax5, 'Recovered,  $R(t)$', 'Interpreter', 'latex');
+xlabel(ax5, 'Time,  {\itt}  (days)',         'Interpreter', 'tex');
+ylabel(ax5, 'Recovered,  {\itR}({\itt})', 'Interpreter', 'tex');
 
 ytl = ax5.YTickLabel;
 if numel(ytl) > 0,  ytl{1} = '';  ax5.YTickLabel = ytl;  end
