@@ -102,6 +102,7 @@ col_3d = gg(4, :);   % purple — 3D phase portrait
 
 ax1 = subplot(2, 3, 1);
 hold(ax1, 'on');
+ax1.TickDir = 'out';
 
 plot(ax1, S, I, '-', 'Color', col_SI, 'LineWidth', LW);
 
@@ -127,6 +128,7 @@ text(ax1, xl1(1), yl1(2), 'A', ...
 
 ax2 = subplot(2, 3, [2, 3]);
 hold(ax2, 'on');
+ax2.TickDir = 'out';
 
 plot3(ax2, S, I, R, '-', 'Color', col_3d, 'LineWidth', LW);
 
@@ -157,8 +159,14 @@ text(ax2, xl2(1), yl2(1), zl2(2), 'B', ...
 
 ax3 = subplot(2, 3, 4);
 hold(ax3, 'on');
+ax3.TickDir = 'out';
 
 plot(ax3, t, S, '-', 'Color', col_S, 'LineWidth', LW);
+
+% ggplot2-style x-expansion: axis starts just below t=0, first tick at 0
+t_pad = 0.05 * tspan(end);
+xlim(ax3, [-t_pad, tspan(end) + t_pad]);
+xticks(ax3, linspace(0, tspan(end), 5));
 
 xlabel(ax3, 'Time,  $t$  (days)',       'Interpreter', 'latex');
 ylabel(ax3, 'Susceptible,  $S(t)$', 'Interpreter', 'latex');
@@ -172,8 +180,12 @@ text(ax3, xl3(1), yl3(2), 'C', ...
 
 ax4 = subplot(2, 3, 5);
 hold(ax4, 'on');
+ax4.TickDir = 'out';
 
 plot(ax4, t, I, '-', 'Color', col_SI, 'LineWidth', LW);
+
+xlim(ax4, [-t_pad, tspan(end) + t_pad]);
+xticks(ax4, linspace(0, tspan(end), 5));
 
 xlabel(ax4, 'Time,  $t$  (days)',   'Interpreter', 'latex');
 ylabel(ax4, 'Infected,  $I(t)$', 'Interpreter', 'latex');
@@ -187,8 +199,12 @@ text(ax4, xl4(1), yl4(2), 'D', ...
 
 ax5 = subplot(2, 3, 6);
 hold(ax5, 'on');
+ax5.TickDir = 'out';
 
 plot(ax5, t, R, '-', 'Color', col_R, 'LineWidth', LW);
+
+xlim(ax5, [-t_pad, tspan(end) + t_pad]);
+xticks(ax5, linspace(0, tspan(end), 5));
 
 xlabel(ax5, 'Time,  $t$  (days)',        'Interpreter', 'latex');
 ylabel(ax5, 'Recovered,  $R(t)$', 'Interpreter', 'latex');

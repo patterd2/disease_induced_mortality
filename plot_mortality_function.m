@@ -64,6 +64,7 @@ cmap     = gg(1:n_curves, :);
 fig = figure('Units', 'inches', 'Position', [1 1 5 4], 'Color', 'w');
 ax  = axes(fig);
 hold(ax, 'on');
+ax.TickDir = 'out';   % explicit override — belt-and-braces
 
 for k = 1:n_curves
     ak = a_vals(k);
@@ -75,6 +76,16 @@ for k = 1:n_curves
         'LineWidth',   LW, ...
         'DisplayName', sprintf('$a = %d$', ak));
 end
+
+%% ── Axis limits: ggplot2-style 5% left-expansion ─────────────────────────
+%
+%   x-data lives on [0, 0.5]; pad left by 5% so axis starts just below 0
+%   while the first tick label remains at I = 0.
+
+I_max   = I_vec(end);
+x_pad   = 0.05 * I_max;
+xlim(ax, [-x_pad, I_max + x_pad]);
+xticks(ax, 0 : 0.1 : I_max);   % ticks at 0, 0.1, 0.2, 0.3, 0.4, 0.5
 
 %% Reference lines ─────────────────────────────────────────────────────────
 
@@ -97,7 +108,7 @@ end
 %% Labels and legend ───────────────────────────────────────────────────────
 
 xlabel(ax, 'Infection levels $(I)$',           'Interpreter', 'latex');
-ylabel(ax, 'Per-infection mortality rate $(f(I))$',  'Interpreter', 'latex');
+ylabel(ax, 'Per--infection mortality rate $(f(I))$',  'Interpreter', 'latex');
 
 legend(ax, ...
     'Interpreter', 'latex', ...
