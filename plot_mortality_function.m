@@ -16,6 +16,7 @@
 
 %addpath('/Users/denispatterson/Documents/MatCont7p4/');
 set_ggplot_style();
+gg = evalin('base', 'gg_colours');
 
 LW = 1.2;
 FN = 'Helvetica';
@@ -27,10 +28,8 @@ b = 0.02;    % baseline disease-induced mortality  (= f at I = 0)
 m = 100;     % saturation parameter                (floor = b/m at I → ∞)
 
 %% ── Values of a to compare ───────────────────────────────────────────────
-%
-%   5 values log-spaced from -10 to -10 000 (3 intermediate values)
 
-a_vals = [-10, -100, -1000, -5000, -10000];
+a_vals = [0, -10, -100, -1000, -10000];
 
 %   Precompute d and inflection I* for reference
 fprintf('\n── Derived d and inflection I* ──────────────────────────────\n');
@@ -50,11 +49,15 @@ I_vec = linspace(0, 0.5, 2000);
 
 %% ── Colours ──────────────────────────────────────────────────────────────
 %
-%   Sequential parula gradient: lightest = least negative a (slowest drop),
-%   darkest = most negative a (sharpest drop near I = 0).
+%   Use gg_colours palette (matches the companion increasing-case figure):
+%     a =      0  →  pink/salmon  gg(1,:)
+%     a =    -10  →  olive-green  gg(2,:)
+%     a =   -100  →  teal-cyan    gg(3,:)
+%     a =  -1000  →  purple       gg(4,:)
+%     a = -10000  →  warm orange  gg(5,:)
 
 n_curves = length(a_vals);
-cmap     = parula(n_curves);
+cmap     = gg(1:n_curves, :);
 
 %% ── Figure ───────────────────────────────────────────────────────────────
 
@@ -75,42 +78,42 @@ end
 
 %% Reference lines ─────────────────────────────────────────────────────────
 
-yline(ax, b, '--', ...
-    'Color',             [0.5 0.5 0.5], ...
-    'LineWidth',         0.8, ...
-    'Label',             '$f(0) = b$', ...
-    'Interpreter',       'latex', ...
-    'LabelHorizontalAlignment', 'left', ...
-    'HandleVisibility',  'off');
-
-yline(ax, b/m, ':', ...
-    'Color',             [0.5 0.5 0.5], ...
-    'LineWidth',         0.8, ...
-    'Label',             '$f(\infty) = b/m$', ...
-    'Interpreter',       'latex', ...
-    'LabelHorizontalAlignment', 'left', ...
-    'HandleVisibility',  'off');
+% yline(ax, b, '--', ...
+%     'Color',             [0.5 0.5 0.5], ...
+%     'LineWidth',         0.8, ...
+%     'Label',             '$f(0) = b$', ...
+%     'Interpreter',       'latex', ...
+%     'LabelHorizontalAlignment', 'left', ...
+%     'HandleVisibility',  'off');
+% 
+% yline(ax, b/m, ':', ...
+%     'Color',             [0.5 0.5 0.5], ...
+%     'LineWidth',         0.8, ...
+%     'Label',             '$f(\infty) = b/m$', ...
+%     'Interpreter',       'latex', ...
+%     'LabelHorizontalAlignment', 'left', ...
+%     'HandleVisibility',  'off');
 
 %% Labels and legend ───────────────────────────────────────────────────────
 
-xlabel(ax, 'Infected,  $I$',           'Interpreter', 'latex');
-ylabel(ax, 'Mortality rate,  $f(I)$',  'Interpreter', 'latex');
+xlabel(ax, 'Infection levels $(I)$',           'Interpreter', 'latex');
+ylabel(ax, 'Per-infection mortality rate $(f(I))$',  'Interpreter', 'latex');
 
 legend(ax, ...
     'Interpreter', 'latex', ...
-    'Location',    'northeast', ...
+    'Location',    'east', ...
     'FontSize',    FS, ...
     'Box',         'off');
 
-ylim(ax, [0, b * 1.15]);   % small headroom above the baseline
+ylim(ax, [0, b * 1.1]);   % small headroom above the baseline
 
 %% ── Save ─────────────────────────────────────────────────────────────────
 
-set(fig, 'PaperPositionMode', 'auto');
-
-if ~exist('plots', 'dir')
-    mkdir('plots');
-end
-
-exportgraphics(fig, 'plots/mortality_function.pdf', 'ContentType', 'vector');
-fprintf('Saved → plots/mortality_function.pdf\n');
+% set(fig, 'PaperPositionMode', 'auto');
+% 
+% if ~exist('plots', 'dir')
+%     mkdir('plots');
+% end
+% 
+% exportgraphics(fig, 'plots/mortality_function.pdf', 'ContentType', 'vector');
+% fprintf('Saved → plots/mortality_function.pdf\n');
