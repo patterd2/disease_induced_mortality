@@ -25,7 +25,7 @@ gg = evalin('base', 'gg_colours');
 %% ── Parameters ───────────────────────────────────────────────────────────
 
 Lambda  = 0.0003846154;
-R0_val  = 0.99;
+R0_val  = 1.005;
 mu      = 0.0003846154;
 delta   = 0.07692308;
 gamma_r = 1;  % 'gamma_r' avoids conflicts with the built-in gamma()
@@ -62,7 +62,7 @@ odefun = @(t, u) [ ...
 %% ── Initial conditions and integration ───────────────────────────────────
 
 u0   = [0.99; 0.01; 0];           % S(0), I(0), R(0) — near DFE with small I
-tspan = [0, 200];
+tspan = [0, 1000];
 
 odeOpts = odeset('RelTol', 1e-8, 'AbsTol', 1e-10, 'NonNegative', [1 2 3]);
 
@@ -145,7 +145,7 @@ ylabel(ax2, 'Infected,  $I$',     'Interpreter', 'latex');
 zlabel(ax2, 'Recovered,  $R$',    'Interpreter', 'latex');
 
 view(ax2, [-35, 22]);
-ax2.Box = 'on';
+ax2.Box = 'off';
 grid(ax2, 'on');
 
 xl2 = ax2.XLim;  yl2 = ax2.YLim;  zl2 = ax2.ZLim;
@@ -199,12 +199,12 @@ text(ax5, xl5(1), yl5(2), 'E', ...
     'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
 
 %% ── Save ─────────────────────────────────────────────────────────────────
-
-set(fig, 'PaperPositionMode', 'auto');
-
-if ~exist('plots', 'dir')
-    mkdir('plots');
-end
-
-exportgraphics(fig, 'plots/single_trajectory.pdf', 'ContentType', 'vector');
-fprintf('Saved → plots/single_trajectory.pdf\n');
+%
+% set(fig, 'PaperPositionMode', 'auto');
+% 
+% if ~exist('plots', 'dir')
+%     mkdir('plots');
+% end
+% 
+% exportgraphics(fig, 'plots/single_trajectory.pdf', 'ContentType', 'vector');
+% fprintf('Saved → plots/single_trajectory.pdf\n');
