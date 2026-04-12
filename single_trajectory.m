@@ -119,6 +119,9 @@ plot(ax1, S(end), I(end), 's', ...
 xlabel(ax1, 'Susceptible,  $S$', 'Interpreter', 'latex');
 ylabel(ax1, 'Infected,  $I$',    'Interpreter', 'latex');
 
+ytl = ax1.YTickLabel;
+if numel(ytl) > 0,  ytl{1} = '';  ax1.YTickLabel = ytl;  end
+
 xl1 = ax1.XLim;  yl1 = ax1.YLim;
 text(ax1, xl1(1), yl1(2), 'A', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
@@ -150,6 +153,9 @@ view(ax2, [-35, 22]);
 ax2.Box = 'off';
 grid(ax2, 'on');
 
+ytl = ax2.YTickLabel;
+if numel(ytl) > 0,  ytl{1} = '';  ax2.YTickLabel = ytl;  end
+
 xl2 = ax2.XLim;  yl2 = ax2.YLim;  zl2 = ax2.ZLim;
 text(ax2, xl2(1), yl2(1), zl2(2), 'B', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
@@ -171,6 +177,9 @@ xticks(ax3, linspace(0, tspan(end), 5));
 xlabel(ax3, 'Time,  $t$  (days)',       'Interpreter', 'latex');
 ylabel(ax3, 'Susceptible,  $S(t)$', 'Interpreter', 'latex');
 
+ytl = ax3.YTickLabel;
+if numel(ytl) > 0,  ytl{1} = '';  ax3.YTickLabel = ytl;  end
+
 xl3 = ax3.XLim;  yl3 = ax3.YLim;
 text(ax3, xl3(1), yl3(2), 'C', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
@@ -190,6 +199,9 @@ xticks(ax4, linspace(0, tspan(end), 5));
 xlabel(ax4, 'Time,  $t$  (days)',   'Interpreter', 'latex');
 ylabel(ax4, 'Infected,  $I(t)$', 'Interpreter', 'latex');
 
+ytl = ax4.YTickLabel;
+if numel(ytl) > 0,  ytl{1} = '';  ax4.YTickLabel = ytl;  end
+
 xl4 = ax4.XLim;  yl4 = ax4.YLim;
 text(ax4, xl4(1), yl4(2), 'D', ...
     'FontName', FN, 'FontSize', 12, 'FontWeight', 'bold', ...
@@ -208,6 +220,9 @@ xticks(ax5, linspace(0, tspan(end), 5));
 
 xlabel(ax5, 'Time,  $t$  (days)',        'Interpreter', 'latex');
 ylabel(ax5, 'Recovered,  $R(t)$', 'Interpreter', 'latex');
+
+ytl = ax5.YTickLabel;
+if numel(ytl) > 0,  ytl{1} = '';  ax5.YTickLabel = ytl;  end
 
 xl5 = ax5.XLim;  yl5 = ax5.YLim;
 text(ax5, xl5(1), yl5(2), 'E', ...

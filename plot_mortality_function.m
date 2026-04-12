@@ -118,6 +118,10 @@ legend(ax, ...
 
 ylim(ax, [0, b * 1.1]);   % small headroom above the baseline
 
+% Suppress first y-tick label (ggplot2 style — avoids crowding at origin)
+ytl = ax.YTickLabel;
+if numel(ytl) > 0,  ytl{1} = '';  ax.YTickLabel = ytl;  end
+
 %% ── Save ─────────────────────────────────────────────────────────────────
 
 % set(fig, 'PaperPositionMode', 'auto');
