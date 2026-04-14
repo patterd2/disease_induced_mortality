@@ -4,7 +4,7 @@
 %
 %     f0 = 0.02    (baseline at zero prevalence)
 %     f1 = 0.0002  (floor at high prevalence)
-%     s = 0.1
+%     s = 0.01
 
 %% ── Style ────────────────────────────────────────────────────────────────
 
@@ -20,30 +20,29 @@ FS = 10;
 
 f0 = 0.02;    % f(I) at I = 0   (baseline mortality)
 f1 = 0.0002;  % f(I) as I → ∞  (floor mortality)
-s  = 0.1;     % logistic scale  (steepness of transition)
+s  = 0.0005;     % logistic scale  (steepness of transition)
 
 %% ── Values of theta to compare ───────────────────────────────────────────
 %
 %   theta is the inflection point of the logistic; five values spanning the
 %   I ∈ [0, 0.5] plotting range, one per gg colour.
 
-theta_vals = [0.05, 0.10, 0.20, 0.35, 0.50];
+theta_vals = [0.001, 0.005, 0.010, 0.015];
 
 %% ── I grid ───────────────────────────────────────────────────────────────
 %
-%   [0, 0.5] spans the range of theta values so every curve shows its
+%   [0, 0.015] spans the range of theta values so every curve shows its
 %   inflection point and a visible portion of both plateau regions.
 
-I_vec = linspace(0, 0.5, 2000);
+I_vec = linspace(0, 0.015, 500);
 
 %% ── Colours ──────────────────────────────────────────────────────────────
 %
 %   Use gg_colours palette (one colour per theta value):
-%     theta = 0.05  →  pink/salmon  gg(1,:)
-%     theta = 0.10  →  olive-green  gg(2,:)
-%     theta = 0.20  →  teal-cyan    gg(3,:)
-%     theta = 0.35  →  purple       gg(4,:)
-%     theta = 0.50  →  warm orange  gg(5,:)
+%     theta = 0.001  →  pink/salmon  gg(1,:)
+%     theta = 0.005  →  olive-green  gg(2,:)
+%     theta = 0.010  →  teal-cyan    gg(3,:)
+%     theta = 0.015  →  purple       gg(4,:)
 
 n_curves = length(theta_vals);
 cmap     = gg(1:n_curves, :);
@@ -62,18 +61,19 @@ for k = 1:n_curves
     plot(ax, I_vec, fk, '-', ...
         'Color',       cmap(k, :), ...
         'LineWidth',   LW, ...
-        'DisplayName', sprintf('\\theta = %.2f', thetak));
+        'DisplayName', sprintf('\\theta = %.3f', thetak));
 end
 
 %% ── Axis limits: ggplot2-style 5% left-expansion ─────────────────────────
 %
-%   x-data lives on [0, 0.5]; pad left by 5% so axis starts just below 0
+%   x-data lives on [0, 0.25]; pad left by 5% so axis starts just below 0
 %   while the first tick label remains at I = 0.
 
 I_max   = I_vec(end);
 x_pad   = 0.05 * I_max;
 xlim(ax, [-x_pad/2, I_max + x_pad]);
-xticks(ax, 0 : 0.1 : I_max);   % ticks at 0, 0.1, 0.2, 0.3, 0.4, 0.5
+xticks(ax, 0 : 0.005 : I_max);   % ticks at 0, 0.005, 0.010, 0.015
+ax.XAxis.Exponent = 0;           % force decimal display (suppress ×10⁻³)
 
 %% Reference lines ─────────────────────────────────────────────────────────
 
