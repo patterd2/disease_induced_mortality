@@ -29,7 +29,7 @@ m = 100;     % saturation parameter                (floor = b/m at I → ∞)
 
 %% ── Values of a to compare ───────────────────────────────────────────────
 
-a_vals = [0, -10, -100, -1000, -10000];
+a_vals = [0, -10, -1000, -100000];
 
 %   Precompute d and inflection I* for reference
 fprintf('\n── Derived d and inflection I* ──────────────────────────────\n');
@@ -45,7 +45,7 @@ fprintf('───────────────────────�
 %   [0, 0.5] captures the full descent for all a values while keeping the
 %   a = -10 curve visually separated from the others.
 
-I_vec = linspace(0, 0.5, 2000);
+I_vec = linspace(0, 0.015, 500);
 
 %% ── Colours ──────────────────────────────────────────────────────────────
 %
@@ -79,13 +79,14 @@ end
 
 %% ── Axis limits: ggplot2-style 5% left-expansion ─────────────────────────
 %
-%   x-data lives on [0, 0.5]; pad left by 5% so axis starts just below 0
+%   x-data lives on [0, 0.05]; pad left by 5% so axis starts just below 0
 %   while the first tick label remains at I = 0.
 
 I_max   = I_vec(end);
 x_pad   = 0.05 * I_max;
-xlim(ax, [-x_pad, I_max + x_pad]);
-xticks(ax, 0 : 0.1 : I_max);   % ticks at 0, 0.1, 0.2, 0.3, 0.4, 0.5
+xlim(ax, [-x_pad/2, I_max + x_pad]);
+xticks(ax, 0 : 0.005 : I_max);   % ticks at 0, 0.005, 0.010, 0.015
+ax.XAxis.Exponent = 0;           % force decimal display (suppress ×10⁻³)
 
 %% Reference lines ─────────────────────────────────────────────────────────
 
