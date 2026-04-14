@@ -5,9 +5,9 @@
 %   d    = -a*m / ((m-1)*b)
 %   f(I) =  b + a*I^2 / (1 + d*I^2)          % I-dependent mortality rate
 %
-%   S'  = Lambda - beta*S*I - mu*S + delta*R
+%   S'  = Lambda - beta*S*I - mu*S + delta*(1 - S - I)
 %   I'  = beta*S*I - (gamma_r+mu)*I - f(I)*I
-%   R'  = gamma_r*I - (mu+delta)*R
+%   R   = 1 - S - I                           (algebraic, not integrated)
 %
 %   where  beta = R0*(mu/Lambda)*(gamma_r+mu+b)
 %
@@ -25,11 +25,11 @@ gg = evalin('base', 'gg_colours');
 %% ── Parameters ───────────────────────────────────────────────────────────
 
 Lambda  = 0.0003846154;
-R0_val  = 1.005;
+R0_val  = 1;
 mu      = 0.0003846154;
-delta   = 0.07692308;
+delta   = 2;
 gamma_r = 1;  % 'gamma_r' avoids conflicts with the built-in gamma()
-a       = -10000;
+a       = -100000;
 b       = 0.02;
 m       = 100;
 
@@ -55,26 +55,24 @@ fprintf('───────────────────────�
 %% ── ODE right-hand side ──────────────────────────────────────────────────
 
 odefun = @(t, u) [ ...
-    Lambda - beta*u(1)*u(2) - mu*u(1)             + delta*u(3); ...
-    beta*u(1)*u(2) - (gamma_r + mu)*u(2) - f(u(2))*u(2);       ...
-    gamma_r*u(2)   - (mu + delta)*u(3)                          ];
+    Lambda - beta*u(1)*u(2) - mu*u(1) + delta*(1 - u(1) - u(2)); ...
+    beta*u(1)*u(2) - (gamma_r + mu)*u(2) - f(u(2))*u(2)         ];
 
 %% ── Initial conditions and integration ───────────────────────────────────
 
-u0   = [0.99; 0.01; 0];           % S(0), I(0), R(0) — near DFE with small I
-tspan = [0, 1000];
+u0   = [0.999; 0.0001];     % S(0), I(0) — R(0) = 1 - S(0) - I(0) = 0.0009
+tspan = [0, 10000];
 
-odeOpts = odeset('RelTol', 1e-8, 'AbsTol', 1e-10, 'NonNegative', [1 2 3]);
+odeOpts = odeset('RelTol', 1e-10, 'AbsTol', 1e-10, 'NonNegative', [1 2]);
 
 [t, u] = ode45(odefun, tspan, u0, odeOpts);
 
 S = u(:, 1);
 I = u(:, 2);
-R = u(:, 3);
-N = S + I + R;   % total population (not conserved due to disease mortality)
+R = 1 - S - I;   % recovered algebraically from S + I + R = 1
 
 fprintf('── Endpoint values at t = %g ─────────────────────────────────\n', tspan(end));
-fprintf('  S = %.6f,  I = %.6f,  R = %.6f,  N = %.6f\n', S(end), I(end), R(end), N(end));
+fprintf('  S = %.6f,  I = %.6f,  R = %.6f\n', S(end), I(end), R(end));
 fprintf('─────────────────────────────────────────────────────────────\n\n');
 
 %% ── Colour assignments ───────────────────────────────────────────────────
@@ -116,8 +114,8 @@ plot(ax1, S(end), I(end), 's', ...
     'Color', mk_col, 'MarkerFaceColor', col_SI, ...
     'MarkerSize', 6, 'LineWidth', 0.8);
 
-xlabel(ax1, 'Susceptible,  {\itS}', 'Interpreter', 'tex');
-ylabel(ax1, 'Infected,  {\itI}',   'Interpreter', 'tex');
+xlabel(ax1, 'Susceptible,  (S)', 'Interpreter', 'tex');
+ylabel(ax1, 'Infected, (I)',   'Interpreter', 'tex');
 
 yt = ax1.YTick;
 if numel(yt) > 1,  ax1.YTick = yt(2:end);  end
@@ -145,9 +143,9 @@ plot3(ax2, S(end), I(end), R(end), 's', ...
     'Color', mk_col, 'MarkerFaceColor', col_3d, ...
     'MarkerSize', 6, 'LineWidth', 0.8);
 
-xlabel(ax2, 'Susceptible,  {\itS}', 'Interpreter', 'tex');
-ylabel(ax2, 'Infected,  {\itI}',   'Interpreter', 'tex');
-zlabel(ax2, 'Recovered,  {\itR}',  'Interpreter', 'tex');
+xlabel(ax2, 'Susceptible (S)', 'Interpreter', 'tex');
+ylabel(ax2, 'Infected (I)',   'Interpreter', 'tex');
+zlabel(ax2, 'Recovered (R)',  'Interpreter', 'tex');
 
 view(ax2, [-35, 22]);
 ax2.Box = 'off';
@@ -174,8 +172,8 @@ t_pad = 0.05 * tspan(end);
 xlim(ax3, [-t_pad, tspan(end) + t_pad]);
 xticks(ax3, linspace(0, tspan(end), 5));
 
-xlabel(ax3, 'Time,  {\itt}  (days)',         'Interpreter', 'tex');
-ylabel(ax3, 'Susceptible,  {\itS}({\itt})', 'Interpreter', 'tex');
+xlabel(ax3, 'Time (weeks)',         'Interpreter', 'tex');
+ylabel(ax3, 'Susceptibles (S)', 'Interpreter', 'tex');
 
 yt = ax3.YTick;
 if numel(yt) > 1,  ax3.YTick = yt(2:end);  end
@@ -196,8 +194,8 @@ plot(ax4, t, I, '-', 'Color', col_SI, 'LineWidth', LW);
 xlim(ax4, [-t_pad, tspan(end) + t_pad]);
 xticks(ax4, linspace(0, tspan(end), 5));
 
-xlabel(ax4, 'Time,  {\itt}  (days)',       'Interpreter', 'tex');
-ylabel(ax4, 'Infected,  {\itI}({\itt})', 'Interpreter', 'tex');
+xlabel(ax4, 'Time (weeks)',       'Interpreter', 'tex');
+ylabel(ax4, 'Infected (I))', 'Interpreter', 'tex');
 
 yt = ax4.YTick;
 if numel(yt) > 1,  ax4.YTick = yt(2:end);  end
@@ -218,8 +216,8 @@ plot(ax5, t, R, '-', 'Color', col_R, 'LineWidth', LW);
 xlim(ax5, [-t_pad, tspan(end) + t_pad]);
 xticks(ax5, linspace(0, tspan(end), 5));
 
-xlabel(ax5, 'Time,  {\itt}  (days)',         'Interpreter', 'tex');
-ylabel(ax5, 'Recovered,  {\itR}({\itt})', 'Interpreter', 'tex');
+xlabel(ax5, 'Time (weeks)',         'Interpreter', 'tex');
+ylabel(ax5, 'Recovered (R)', 'Interpreter', 'tex');
 
 yt = ax5.YTick;
 if numel(yt) > 1,  ax5.YTick = yt(2:end);  end
