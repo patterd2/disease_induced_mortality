@@ -5,9 +5,9 @@
 %   d    = -a*m / ((m-1)*b)
 %   f(I) =  b + a*I^2 / (1 + d*I^2)          % I-dependent mortality rate
 %
-%   S'  = Lambda - beta*S*I - mu*S + delta*(1 - S - I)
+%   S'  = Lambda - beta*S*I - mu*S + delta*R
 %   I'  = beta*S*I - (gamma_r+mu)*I - f(I)*I
-%   R   = 1 - S - I                           (algebraic, not integrated)
+%   R'   = gamma_r * I - (mu + delta)*R
 %
 %   where  beta = R0*(mu/Lambda)*(gamma_r+mu+b)
 %
@@ -55,21 +55,22 @@ fprintf('───────────────────────�
 %% ── ODE right-hand side ──────────────────────────────────────────────────
 
 odefun = @(t, u) [ ...
-    Lambda - beta*u(1)*u(2) - mu*u(1) + delta*(1 - u(1) - u(2)); ...
-    beta*u(1)*u(2) - (gamma_r + mu)*u(2) - f(u(2))*u(2)         ];
+    Lambda - beta*u(1)*u(2) - mu*u(1)             + delta*u(3); ...
+    beta*u(1)*u(2) - (gamma_r + mu)*u(2) - f(u(2))*u(2);       ...
+    gamma_r*u(2)   - (mu + delta)*u(3)                          ];
 
 %% ── Initial conditions and integration ───────────────────────────────────
 
-u0   = [0.999; 0.0001];     % S(0), I(0) — R(0) = 1 - S(0) - I(0) = 0.0009
+u0   = [0.995; 0.001; 0];   % S(0), I(0), R(0)
 tspan = [0, 10000];
 
-odeOpts = odeset('RelTol', 1e-10, 'AbsTol', 1e-10, 'NonNegative', [1 2]);
+odeOpts = odeset('RelTol', 1e-12, 'AbsTol', 1e-12, 'NonNegative', [1 2 3]);
 
-[t, u] = ode45(odefun, tspan, u0, odeOpts);
+[t, u] = ode15s(odefun, tspan, u0, odeOpts);
 
 S = u(:, 1);
 I = u(:, 2);
-R = 1 - S - I;   % recovered algebraically from S + I + R = 1
+R = u(:, 3);
 
 fprintf('── Endpoint values at t = %g ─────────────────────────────────\n', tspan(end));
 fprintf('  S = %.6f,  I = %.6f,  R = %.6f\n', S(end), I(end), R(end));
