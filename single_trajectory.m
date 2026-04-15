@@ -45,6 +45,23 @@ beta = R0_val * (mu / Lambda) * (gamma_r + mu + b);
 %   f(0) = b  (baseline),  f(inf) -> b/m  (saturating, lower at high I)
 f    = @(I) b + a .* I.^2 ./ (1 + d .* I.^2);
 
+% Derivative of f w.r.t. I  (needed for analytical Jacobian)
+%   f'(I) = 2aI / (1 + dI²)²
+dfdI = @(I) 2*a.*I ./ (1 + d.*I.^2).^2;
+
+% Analytical Jacobian of the ODE right-hand side
+%   Supplying this to ode15s eliminates finite-difference Jacobian
+%   approximation and reduces Newton-iteration function evaluations.
+%
+%   J = [ -(β I + µ),   -β S,                              δ  ]
+%       [   β I,         β S-(γ+µ)-f(I)-f'(I)·I,          0  ]
+%       [   0,           γ,                              -(µ+δ)]
+%
+jac  = @(t, u) [ ...
+    -(beta*u(2) + mu),  -beta*u(1),                                              delta; ...
+     beta*u(2),          beta*u(1) - (gamma_r+mu) - f(u(2)) - dfdI(u(2))*u(2),  0;    ...
+     0,                  gamma_r,                                             -(mu+delta) ];
+
 fprintf('\n── Derived parameters ───────────────────────────────────────\n');
 fprintf('  d          = %12.4f\n', d);
 fprintf('  beta       = %12.8f\n', beta);
@@ -64,7 +81,11 @@ odefun = @(t, u) [ ...
 u0   = [0.995; 0.001; 0];   % S(0), I(0), R(0)
 tspan = [0, 10000];
 
-odeOpts = odeset('RelTol', 1e-12, 'AbsTol', 1e-12, 'NonNegative', [1 2 3]);
+odeOpts = odeset('RelTol',      1e-12,   ...
+                 'AbsTol',      1e-12,   ...
+                 'NonNegative', [1 2 3], ...
+                 'Jacobian',    jac,     ...
+                 'MaxOrder',    5);
 
 [t, u] = ode15s(odefun, tspan, u0, odeOpts);
 
