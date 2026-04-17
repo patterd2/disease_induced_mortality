@@ -25,9 +25,9 @@ gg = evalin('base', 'gg_colours');
 %% ── Parameters ───────────────────────────────────────────────────────────
 
 Lambda  = 0.0003846154;
-R0_val  = 1;
-mu      = 0.0003846154;
-delta   = 2;
+R0_val  = 1.006;
+mu      = Lambda;
+delta   = 0.07692308;
 gamma_r = 1;  % 'gamma_r' avoids conflicts with the built-in gamma()
 a       = -100000;
 b       = 0.02;
@@ -43,7 +43,7 @@ beta = R0_val * (mu / Lambda) * (gamma_r + mu + b);
 
 % Disease-induced mortality rate as a function of I
 %   f(0) = b  (baseline),  f(inf) -> b/m  (saturating, lower at high I)
-f    = @(I) b + a .* I.^2 ./ (1 + d .* I.^2);
+f    = @(I) b + (a .* I.^2 ./ (1 + d .* I.^2));
 
 % Derivative of f w.r.t. I  (needed for analytical Jacobian)
 %   f'(I) = 2aI / (1 + dI²)²
@@ -58,9 +58,9 @@ dfdI = @(I) 2*a.*I ./ (1 + d.*I.^2).^2;
 %       [   0,           γ,                              -(µ+δ)]
 %
 jac  = @(t, u) [ ...
-    -(beta*u(2) + mu),  -beta*u(1),                                              delta; ...
-     beta*u(2),          beta*u(1) - (gamma_r+mu) - f(u(2)) - dfdI(u(2))*u(2),  0;    ...
-     0,                  gamma_r,                                             -(mu+delta) ];
+    -(beta*u(2) + mu),  -beta*u(1),      delta; ...
+     beta*u(2), beta*u(1) - (gamma_r+mu) - f(u(2)) - dfdI(u(2))*u(2),  0;  ...
+     0, gamma_r,  -(mu+delta) ];
 
 fprintf('\n── Derived parameters ───────────────────────────────────────\n');
 fprintf('  d          = %12.4f\n', d);
@@ -72,14 +72,14 @@ fprintf('───────────────────────�
 %% ── ODE right-hand side ──────────────────────────────────────────────────
 
 odefun = @(t, u) [ ...
-    Lambda - beta*u(1)*u(2) - mu*u(1)             + delta*u(3); ...
+    Lambda - beta*u(1)*u(2) - mu*u(1) + delta*u(3); ...
     beta*u(1)*u(2) - (gamma_r + mu)*u(2) - f(u(2))*u(2);       ...
-    gamma_r*u(2)   - (mu + delta)*u(3)                          ];
+    gamma_r*u(2)   - (mu + delta)*u(3) ];
 
 %% ── Initial conditions and integration ───────────────────────────────────
 
-u0   = [0.995; 0.001; 0];   % S(0), I(0), R(0)
-tspan = [0, 10000];
+u0   = [0.98; 0.001; 0.01];   % S(0), I(0), R(0)
+tspan = [0, 100000];
 
 odeOpts = odeset('RelTol',      1e-12,   ...
                  'AbsTol',      1e-12,   ...
@@ -93,6 +93,8 @@ S = u(:, 1);
 I = u(:, 2);
 R = u(:, 3);
 
+mid = find(t >= tspan(end)/2, 1);   % first index in the second half of tspan
+
 fprintf('── Endpoint values at t = %g ─────────────────────────────────\n', tspan(end));
 fprintf('  S = %.6f,  I = %.6f,  R = %.6f\n', S(end), I(end), R(end));
 fprintf('─────────────────────────────────────────────────────────────\n\n');
@@ -102,7 +104,6 @@ fprintf('───────────────────────�
 col_SI  = gg(1, :);   % pink/salmon  — phase portrait & I(t)
 col_S   = gg(2, :);   % olive-green  — S(t)
 col_R   = gg(3, :);   % teal-cyan    — R(t)
-mk_col  = [0.25 0.25 0.25];   % dark grey for IC / end-state markers
 
 %% ── Figure ───────────────────────────────────────────────────────────────
 %
@@ -124,17 +125,7 @@ ax1 = subplot(2, 3, 1);
 hold(ax1, 'on');
 ax1.TickDir = 'out';
 
-plot(ax1, S, I, '-', 'Color', col_SI, 'LineWidth', LW);
-
-% IC marker (filled circle)
-plot(ax1, S(1), I(1), 'o', ...
-    'Color', mk_col, 'MarkerFaceColor', col_SI, ...
-    'MarkerSize', 6, 'LineWidth', 0.8);
-
-% End-state marker (filled square)
-plot(ax1, S(end), I(end), 's', ...
-    'Color', mk_col, 'MarkerFaceColor', col_SI, ...
-    'MarkerSize', 6, 'LineWidth', 0.8);
+plot(ax1, S(mid:end), I(mid:end), '-', 'Color', col_SI, 'LineWidth', LW);
 
 xlabel(ax1, 'Susceptible,  (S)', 'Interpreter', 'tex');
 ylabel(ax1, 'Infected, (I)',   'Interpreter', 'tex');
@@ -153,17 +144,7 @@ ax2 = subplot(2, 3, [2, 3]);
 hold(ax2, 'on');
 ax2.TickDir = 'out';
 
-plot3(ax2, S, I, R, '-', 'Color', col_3d, 'LineWidth', LW);
-
-% IC marker (filled circle)
-plot3(ax2, S(1), I(1), R(1), 'o', ...
-    'Color', mk_col, 'MarkerFaceColor', col_3d, ...
-    'MarkerSize', 6, 'LineWidth', 0.8);
-
-% End-state marker (filled square)
-plot3(ax2, S(end), I(end), R(end), 's', ...
-    'Color', mk_col, 'MarkerFaceColor', col_3d, ...
-    'MarkerSize', 6, 'LineWidth', 0.8);
+plot3(ax2, S(mid:end), I(mid:end), R(mid:end), '-', 'Color', col_3d, 'LineWidth', LW);
 
 xlabel(ax2, 'Susceptible (S)', 'Interpreter', 'tex');
 ylabel(ax2, 'Infected (I)',   'Interpreter', 'tex');
