@@ -1,4 +1,5 @@
 plots/*.pdf
 plots/*.png
+plots/*.svg
 *.asv
 .DS_Store
