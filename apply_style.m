@@ -19,9 +19,9 @@ for k = 1:numel(all_axes)
 
     ax.Box                  = 'off';
     ax.TickDir              = 'out';
-    ax.FontName             = 'Helvetica';
-    ax.FontSize             = 10;
-    ax.LineWidth            = 0.8;
+    ax.FontName             = 'Arial';
+    ax.FontSize             = 20;
+    ax.LineWidth            = 2;
     ax.XColor               = [0.3 0.3 0.3];
     ax.YColor               = [0.3 0.3 0.3];
     ax.ZColor               = [0.3 0.3 0.3];
@@ -30,23 +30,23 @@ for k = 1:numel(all_axes)
     ax.TickLabelInterpreter = 'tex';
 
     % Remove first y-tick mark and label (ggplot2 origin gap)
-    yt = ax.YTick;
-    if numel(yt) > 1,  ax.YTick = yt(2:end);  end
+    %yt = ax.YTick;
+    %if numel(yt) > 1,  ax.YTick = yt(2:end);  end
 end
 
 %% ── Lines ────────────────────────────────────────────────────────────────
 
 all_lines = findall(fig, 'Type', 'line');
 for k = 1:numel(all_lines)
-    all_lines(k).LineWidth = 1.2;
+    all_lines(k).LineWidth = 2;
 end
 
 %% ── Text ─────────────────────────────────────────────────────────────────
 
 all_text = findall(fig, 'Type', 'text');
 for k = 1:numel(all_text)
-    all_text(k).FontName = 'Helvetica';
-    all_text(k).FontSize = 10;
+    all_text(k).FontName = 'Arial';
+    all_text(k).FontSize = 20;
 end
 
 %% ── Legends ──────────────────────────────────────────────────────────────
@@ -55,8 +55,8 @@ all_legends = findall(fig, 'Type', 'legend');
 for k = 1:numel(all_legends)
     lg             = all_legends(k);
     lg.Box         = 'off';
-    lg.FontName    = 'Helvetica';
-    lg.FontSize    = 10;
+    lg.FontName    = 'Arial';
+    lg.FontSize    = 20;
     lg.Interpreter = 'tex';
 end
 

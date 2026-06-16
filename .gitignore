@@ -1,3 +1,4 @@
 plots/*.pdf
 plots/*.png
 *.asv
+.DS_Store

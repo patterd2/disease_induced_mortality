@@ -18,9 +18,9 @@
 set_ggplot_style();
 gg = evalin('base', 'gg_colours');
 
-LW = 1.2;
+LW = 2;
 FN = 'Helvetica';
-FS = 10;
+FS = 12;
 
 %% ── Fixed parameters ─────────────────────────────────────────────────────
 
@@ -29,7 +29,7 @@ m = 100;     % saturation parameter                (floor = b/m at I → ∞)
 
 %% ── Values of a to compare ───────────────────────────────────────────────
 
-a_vals = [0, -10, -1000, -100000];
+a_vals = [0, -100, -1000, -100000];
 
 %   Precompute d and inflection I* for reference
 fprintf('\n── Derived d and inflection I* ──────────────────────────────\n');

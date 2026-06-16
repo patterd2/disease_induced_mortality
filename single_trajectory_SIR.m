@@ -25,11 +25,11 @@ gg = evalin('base', 'gg_colours');
 %% ── Parameters ───────────────────────────────────────────────────────────
 
 Lambda  = 0.0003846154;
-R0_val  = 1.006;
+R0_val  = 1.2;
 mu      = Lambda;
-delta   = 0.07692308;
-gamma_r = 1;  % 'gamma_r' avoids conflicts with the built-in gamma()
-a       = -100000;
+delta   = 0.2;
+gamma_r = 0.2;  % 'gamma_r' avoids conflicts with the built-in gamma()
+a       = -100;
 b       = 0.02;
 m       = 100;
 
@@ -78,8 +78,8 @@ odefun = @(t, u) [ ...
 
 %% ── Initial conditions and integration ───────────────────────────────────
 
-u0   = [0.98; 0.001; 0.01];   % S(0), I(0), R(0)
-tspan = [0, 100000];
+u0   = [0.8; 0.02; 0.0];   % S(0), I(0), R(0)
+tspan = [0, 10000];
 
 odeOpts = odeset('RelTol',      1e-12,   ...
                  'AbsTol',      1e-12,   ...
