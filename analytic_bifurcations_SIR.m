@@ -4,12 +4,12 @@ function analytic_bifurcations_SIR
 b      = 0.02;     % baseline per-infection DIM, f(0)=b      [week^-1]
 m      = 100;      % fold reduction at high infection, f(Inf)=b/m
 a      = -100;     % curvature (a<0 => decreasing DIM)
-gamma  = 0.4;        % recovery rate                            [week^-1]
+gamma  = 0.25;        % recovery rate                            [week^-1]
 mu     = 1/2600;   % natural mortality                        [week^-1]
 Lambda = mu;   % recruitment                              [week^-1]
 
 % plotting window
-R0lim = [0.9 2];
+R0lim = [0.9 5];
 Ylim  = [1 25];          % 1/delta
 
 % ---- DIM handles ----

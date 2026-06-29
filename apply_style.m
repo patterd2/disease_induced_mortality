@@ -21,7 +21,7 @@ for k = 1:numel(all_axes)
     ax.TickDir              = 'out';
     ax.FontName             = 'Arial';
     ax.FontSize             = 20;
-    ax.LineWidth            = 2;
+    ax.LineWidth            = 3;
     ax.XColor               = [0.3 0.3 0.3];
     ax.YColor               = [0.3 0.3 0.3];
     ax.ZColor               = [0.3 0.3 0.3];
@@ -38,7 +38,7 @@ end
 
 all_lines = findall(fig, 'Type', 'line');
 for k = 1:numel(all_lines)
-    all_lines(k).LineWidth = 2;
+    all_lines(k).LineWidth = 3;
 end
 
 %% ── Text ─────────────────────────────────────────────────────────────────
